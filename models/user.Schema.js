@@ -47,5 +47,27 @@ userSchema.pre("save", async function (next){
     next();
 })
 
+// challenge 2 -add more feature directly to schema so that we can use it directly when we need, just like save()mongoose method
+userSchema.methods = {
+    // compare password
+    comparePassword: async function(enteredPassword){
+        return await bcrypt.compare(enteredPassword, this.password)
+    },
+
+    // generate jwt token
+    getJwtToken: function(){
+        return jwt.sign(
+            {
+                _id: this.id, 
+                role: this.role
+            }, 
+            "bad-secret",
+            {
+                expiresIn: "2h_bad"
+            }
+        )
+    }
+} 
+
 
 export default mongoose.model("user", userSchema)
