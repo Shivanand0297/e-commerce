@@ -3,6 +3,7 @@ import AuthRoles from "../utils/authRoles";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import crypto from "crypto" // comes by default in nodejs
+import config from "../config";
 
 // const userSchema = new mongoose.Schema({}) both are same now
 const userSchema = mongoose.Schema(
@@ -48,7 +49,7 @@ userSchema.pre("save", async function (next){
 })
 
 // challenge 2 -add more feature directly to schema so that we can use it directly when we need, just like save()mongoose method
-userSchema.methods = {
+userSchema.methods = {  //it is like a prototype
     // compare password
     comparePassword: async function(enteredPassword){
         return await bcrypt.compare(enteredPassword, this.password)
@@ -61,9 +62,9 @@ userSchema.methods = {
                 _id: this.id, 
                 role: this.role
             }, 
-            "bad-secret",
+            config.JWT_SECRET,
             {
-                expiresIn: "2h_bad"
+                expiresIn: config.JWT_EXPIRY //process.env.JWT_EXPIRY
             }
         )
     }
