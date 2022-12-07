@@ -1,0 +1,1 @@
+e-commerce is a full stack project, this is a backend part
