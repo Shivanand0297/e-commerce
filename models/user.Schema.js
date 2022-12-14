@@ -40,7 +40,7 @@ const userSchema = mongoose.Schema(
 
 // challenge 1 - encrypt the password (we can do it in the same way we did in userAuth)
 // here we will use mongoose hooks to encrypt the password before saving it
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) { // use function not arrow function
   if (!this.isModified("password")) {
     return next();
   }
@@ -60,7 +60,7 @@ userSchema.methods = {
   getJwtToken: function () {
     return jwt.sign(
       {
-        _id: this.id,
+        _id: this._id,
         role: this.role,
       },
       config.JWT_SECRET,
