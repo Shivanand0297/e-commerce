@@ -10,7 +10,7 @@ const collectionSchema = mongoose.Schema(
         }
     },
     {
-        timeStamps: true
+        timestamps: true
     }
 )
 
