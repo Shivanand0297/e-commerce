@@ -1,4 +1,4 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 const couponsSchema = mongoose.Schema(
     {
         code: {
@@ -19,4 +19,4 @@ const couponsSchema = mongoose.Schema(
     }
 )
 
-export default mongoose.model("Coupons", couponsSchema)
+export default mongoose.model("Coupon", couponsSchema)
