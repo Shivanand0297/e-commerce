@@ -84,3 +84,15 @@ export const login = asyncHandler(async(req, res)=>{
     }
     throw new CustomError("Invalid credentials -pass", 400)
 })
+
+export const logout = asyncHandler(async(_req, res)=>{  //_res means we are not using req
+    // res.clearCookie()
+    res.cookie("token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true
+    })
+    res.status(200).json({
+        success: true, 
+        message: "logged out"
+    })
+})
