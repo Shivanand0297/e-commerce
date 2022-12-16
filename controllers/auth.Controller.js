@@ -96,3 +96,5 @@ export const logout = asyncHandler(async(_req, res)=>{  //_res means we are not 
         message: "logged out"
     })
 })
+
+// now we will work on forgot password
