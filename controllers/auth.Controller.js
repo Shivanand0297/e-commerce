@@ -3,6 +3,7 @@ import asyncHandler from "../services/asyncHandler"
 import CustomError from "../utils/customError"
 import cookieOptions from "../utils/cookieOptions"
 import mailHelper from "../utils/mailHelper"
+import crypto from "crypto"
 
 /**
  * @SIGNUP
@@ -154,4 +155,62 @@ export const forgotPassword = asyncHandler(async(req, res)=>{
     }
 
 })
+
+/**
+ * @resetpassword
+ * @route http://localhost:5000/api/auth/password/reset/:resetToken
+ * @description user will be able to reset password based on urltoken
+ * @parameters token from url, password and confirmpassword   
+ * @returns user object (depends on the flow)
+ */
+
+export const resetPassword = asyncHandler(async(req, res)=>{
+    // taking resettoken from the params
+    const {resetToken} = req.params;
+
+    // taking new password and confirm password from the user
+    const {password, confirmPassword} = req.body;
+
+    // since in the database the token is already encrypted so we need to encrypt the above token in order to match it with the database
+    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex")
+
+    // so we need to find the user based on the resetPasswordToken
+    const user = await User.findOne({
+        forgotPasswordToken: resetPasswordToken,
+        forgotPasswordExpiry: {$gt: Date.now()} //since in the database a future date is set like 3days from now, so this will return user whose expirydate is greater then now()
+    })
+
+    if(!user){
+        throw new CustomError("password token expired on invalid", 400)
+    }
+    if(password !== confirmPassword){
+        throw new CustomError("password and confirm password doesnot match", 400)
+    }
+
+    user.password = password;
+    user.forgotPasswordToken = undefined // job is done, no need to store unwanted values in the database
+    user.forgotPasswordExpiry = undefined
+
+    await user.save();
+
+    // create token and send as response
+    const token = user.getJwtToken()
+    user.password = undefined // although not required because we have set it as select: false and are query this time
+
+    // helper method for setting cookies can be added
+    res.cookie("token", token, cookieOptions)
+    res.status(200).json({
+        success: true,
+        user
+    })
+
+})
+
+/**
+ * @changepassword
+ * @route http://localhost:5000/api/auth/password/change
+ * @description user will be able to change password based on old password
+ * @parameters old password  
+ * @returns user object (depends on the flow)
+ */
 
