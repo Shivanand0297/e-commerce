@@ -235,10 +235,30 @@ export const changePassword = asyncHandler(async(req, res)=>{
     user.password = newPassword;
 
     await user.save({validateBeforeSave: false})
-    
+
     res.status(200).json({
         success: true, 
         message: "Password changed successfully",
         user
     })
 })
+
+/**
+ * @reques_type GET
+ * @get_profile
+ * @route http://localhost:5000/api/auth/profile
+ * @description check for token and populate req.user
+ * @parameters   
+ * @returns user object
+ */
+
+export const getProfile = asyncHandler(async(req, res)=>{
+    const user = req.user   // from middleware
+    if(!user){
+        throw new CustomError("User not found", 401)
+    }
+    res.status(200).json({
+        success: true,
+        user
+    })
+}) 

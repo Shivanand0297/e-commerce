@@ -5,7 +5,7 @@ import CustomError from "../utils/customError";
 import jwt from "jsonwebtoken"
 
 
-export const isLoggedIn = asyncHandler(async(req, res, next)=>{
+export const isLoggedIn = asyncHandler(async(req, _res, next)=>{
     let token;
     if(
         req.cookies.token || (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) 
