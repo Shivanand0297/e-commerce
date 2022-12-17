@@ -13,7 +13,7 @@ import crypto from "crypto"
  * @returns User object
  */
 
-export const signup = asyncHandler(async (res, res)=>{  
+export const signup = asyncHandler(async (req, res)=>{  
         // note that we dont need trycatch because we handled it in asynchandler
         // take input from thr frontend
         const {name, email, password} = req.body;
@@ -86,6 +86,14 @@ export const login = asyncHandler(async(req, res)=>{
     }
     throw new CustomError("Invalid credentials -pass", 400)
 })
+
+/**
+ * @logout
+ * @route 
+ * @description logout will clear the cookie to logout
+ * @parameters none
+ * @returns logout message
+ */
 
 export const logout = asyncHandler(async(_req, res)=>{  //_res means we are not using req
     // res.clearCookie()
@@ -214,3 +222,23 @@ export const resetPassword = asyncHandler(async(req, res)=>{
  * @returns user object (depends on the flow)
  */
 
+export const changePassword = asyncHandler(async(req, res)=>{
+    const {oldPassword, newPassword} = req.body;
+
+    // getting user based on old password
+    const user = await User.findOne({password: oldPassword})
+    if(!user){
+        throw new CustomError("password does not match", 400)
+    }
+
+    // changing password
+    user.password = newPassword;
+
+    await user.save({validateBeforeSave: false})
+    
+    res.status(200).json({
+        success: true, 
+        message: "Password changed successfully",
+        user
+    })
+})
