@@ -4,6 +4,7 @@ import CustomError from "../utils/customError"
 import cookieOptions from "../utils/cookieOptions"
 import mailHelper from "../utils/mailHelper"
 import crypto from "crypto"
+import bcrypt from "bcryptjs"
 
 /**
  * @SIGNUP
@@ -134,7 +135,7 @@ export const forgotPassword = asyncHandler(async(req, res)=>{
 
     await user.save({validateBeforeSave: false})    //to skip all the validation like required and all
 
-    // creating url for resetting password
+    // creating unique url for resetting password using token
     const resetURL = 
     `${req.protocol}://${req.get("host")}/api/auth/password/forgot/${resetToken}`
 
@@ -225,8 +226,10 @@ export const resetPassword = asyncHandler(async(req, res)=>{
 export const changePassword = asyncHandler(async(req, res)=>{
     const {oldPassword, newPassword} = req.body;
 
+  const oldEncryptedPassword = await bcrypt.hash(oldPassword, 10);
+
     // getting user based on old password
-    const user = await User.findOne({password: oldPassword})
+    const user = await User.findOne({password: oldEncryptedPassword})
     if(!user){
         throw new CustomError("password does not match", 400)
     }
