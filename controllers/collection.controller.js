@@ -4,16 +4,16 @@ import CustomError from "../utils/customError"
 import asyncHandler from "../services/asyncHandler"
 
 
-/***************************************************
- * @reques_type POST
+/***************************************************************
+ * @reques_type - POST
  * @createCollection
- * @route http://localhost:5000/api/collection/create
- * @description check for token and populate req.user
- * @parameters   
- * @returns user object
- ***************************************************/
+ * @route - http://localhost:5000/api/collection/create
+ * @description - takes collection name and create a collection
+ * @parameters - name 
+ * @returns - collection object
+ ***************************************************************/
 
-const createCollection = asyncHandler(async(req, res)=>{
+export const createCollection = asyncHandler(async(req, res)=>{
     // take collection name from frontend
     const {name} = req.body;
 
@@ -28,12 +28,20 @@ const createCollection = asyncHandler(async(req, res)=>{
     res.status(200).json({
         success: true,
         message: "Collection created successfully",
-        name
+        collection
     })
 })
 
+/****************************************************************************************************
+ * @reques_type - PUT
+ * @updateCollection
+ * @route - http://localhost:5000/api/collection/update
+ * @description - takes collection id from params and updated data from user to update the collection
+ * @parameters - collectionID, name 
+ * @returns - updated collection object
+ ****************************************************************************************************/
 
-const updateCollection = asyncHandler(async(req, res)=>{
+export const updateCollection = asyncHandler(async(req, res)=>{
     // grab what to update
     const {id: collectionId}  = req.params;
 
@@ -63,6 +71,15 @@ const updateCollection = asyncHandler(async(req, res)=>{
 })
 
 
+/****************************************************************************************************
+ * @reques_type - DELETE
+ * @deleteCollection
+ * @route - http://localhost:5000/api/collection/delete
+ * @description - takes collection id from params and delete the collection
+ * @parameters - collectionID
+ * @returns - deleted collection object
+ ****************************************************************************************************/
+
 export const deleteCollection = asyncHandler(async(req, res)=>{
     const {id: collectionId}  = req.params;
 
@@ -86,6 +103,14 @@ export const deleteCollection = asyncHandler(async(req, res)=>{
 
 })
 
+/****************************************************************************************************
+ * @reques_type - GET
+ * @getAllCollections
+ * @route - http://localhost:5000/api/collection/getCollections
+ * @description - return all the collection stored in db
+ * @parameters - none
+ * @returns - all collection object
+ ****************************************************************************************************/
 
 export const getAllCollections = asyncHandler(async (req, res)=>{
     const collections = await Collection.find()
