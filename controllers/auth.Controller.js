@@ -137,7 +137,7 @@ export const forgotPassword = asyncHandler(async(req, res)=>{
 
     // creating unique url for resetting password using token
     const resetURL = 
-    `${req.protocol}://${req.get("host")}/api/auth/password/forgot/${resetToken}`
+    `${req.protocol}://${req.get("host")}/api/auth/password/reset/${resetToken}`
 
     const text = `Your password reset link is
     \n\n ${resetURL} \n\n`
@@ -229,7 +229,7 @@ export const changePassword = asyncHandler(async(req, res)=>{
   const oldEncryptedPassword = await bcrypt.hash(oldPassword, 10);
 
     // getting user based on old password
-    const user = await User.findOne({password: oldEncryptedPassword})
+    const user = await User.findOne({password: oldEncryptedPassword}).select("+password")
     if(!user){
         throw new CustomError("password does not match", 400)
     }
