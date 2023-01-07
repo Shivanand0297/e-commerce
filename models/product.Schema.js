@@ -35,6 +35,22 @@ const productSchema = mongoose.Schema(
         collectionID: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Collection"
+        },
+        ratings: {
+            type: [
+                {
+                    userID: {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: "User",
+                        required: true 
+                    },
+                    rating: {
+                        type: Number,
+                    maxLength: [5, "give rating out of 5 only"]
+                    }
+                }
+            ],
+            required: true
         }
     },
     {
