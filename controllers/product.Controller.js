@@ -45,7 +45,7 @@ export const addProduct = asyncHandler(async (req, res)=>{
             // check
             if(
                 !fields.name ||
-                !files.price ||
+                !fields.price ||
                 !fields.description ||
                 !fields.collectionID
             ){
@@ -54,6 +54,7 @@ export const addProduct = asyncHandler(async (req, res)=>{
             
 
             let imageArrayResp = Promise.all(
+                // just to make sure that it returns a array of keys
                 Object.keys(files).map(async (filekey, index)=>{
                     const element = files[filekey]
                     const data = fs.readFileSync(element.filepath)  //from where to upload files from your system
@@ -70,7 +71,7 @@ export const addProduct = asyncHandler(async (req, res)=>{
                         secure_url: upload.Location // url of the bucket
                     }
                 })
-            )    // just to make sure that it returns a array of keys
+            )    
 
             /* 
                 Promise.all()    
